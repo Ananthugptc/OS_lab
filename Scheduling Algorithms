@@ -1,0 +1,103 @@
+void fcfs()
+{
+    int n, pid[MAX], at[MAX], bt[MAX], rt[MAX], wt[MAX], ct[MAX], tt[MAX], sum = 0;
+    float ctt = 0, wtt = 0, ttt = 0;  // Initialize average variables as float
+    printf("Enter the number of processes: ");
+    scanf("%d", &n);
+    for (int i = 0; i < n; i++)
+    {
+        printf("\nProcess ID for process %d: ", i);
+        scanf("%d", &pid[i]);
+        printf("Arrival Time for process %d: ", i);
+        scanf("%d", &at[i]);
+        printf("Burst Time for process %d: ", i);
+        scanf("%d", &bt[i]);
+        printf("\n");
+    }
+    printf("-------------------------\n");
+    printf("|PID\t|AT\t|BT\t|\n");
+    for (int i = 0; i < n; i++)
+    {
+        printf("|%d\t|%d\t|%d\t|\n", pid[i], at[i], bt[i]);
+    }
+    printf("-------------------------\n");
+
+    // Sorting processes based on arrival time
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = i + 1; j < n; j++)
+        {
+            if (at[i] > at[j])
+            {
+                int temp = at[i];
+                at[i] = at[j];
+                at[j] = temp;
+
+                temp = pid[i];
+                pid[i] = pid[j];
+                pid[j] = temp;
+
+                temp = bt[i];
+                bt[i] = bt[j];
+                bt[j] = temp;
+            }
+        }
+    }
+
+    // Calculating completion time, turnaround time, waiting time, and response time
+    int current_time;
+    ct[0] = at[0] + bt[0];
+    tt[0] = ct[0] - at[0];
+    wt[0] = tt[0] - bt[0];
+    rt[0] = 0;
+    current_time=ct[0];
+    for (int i = 1; i < n; i++)
+    {
+             if(current_time<at[i])
+             {
+                 current_time++;
+             }
+
+               ct[i] = current_time + bt[i];
+               tt[i] = ct[i] - at[i];
+               wt[i] = tt[i] - bt[i];
+               rt[i] = wt[i];
+               current_time=ct[i];
+
+    }
+    // Displaying results
+    printf("\n---------------------------------------------------------\n");
+    printf("|PID\t|AT\t|BT\t|RT\t|CT\t|TT\t|WT\t|\n");
+    for (int i = 0; i < n; i++)
+    {
+        printf("|%d\t|%d\t|%d\t|%d\t|%d\t|%d\t|%d\t|\n", pid[i], at[i], bt[i], rt[i], ct[i], tt[i], wt[i]);
+
+        // Adding to the total waiting time and turnaround time
+        ctt +=ct[i];
+        ttt += tt[i];
+        wtt += wt[i];
+    }
+    printf("---------------------------------------------------------\n");
+
+    // Displaying Gantt chart
+    printf("\nGantt Chart\n");
+    printf("------------------------------------------------------------------------------------------------------------\n");
+    printf("|");
+    for (int i = 0; i < n; i++)
+    {
+        printf("  P%d\t|      |", pid[i]);
+    }
+    printf("\n-----------------------------------------------------------------------------------------------------------\n");
+    //printf("%d\t",at[0]);
+    for (int i = 0; i < n; i++)
+    {
+        printf("%d\t",at[i]+rt[i]);
+        printf("%d\t",ct[i]);
+    }
+    printf("\n\n");
+
+    // Displaying average times
+    printf("Average Waiting Time: %.2f\n", wtt / n);
+    printf("Average Turnaround Time: %.2f\n", ttt / n);
+     printf("Average Completion Time: %.2f\n", ctt / n);
+}
